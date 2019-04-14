@@ -1,0 +1,167 @@
+/-------------------------------------------------------------------------------------/
+/---------------------------------INSTALAR JDK----------------------------------------/
+/-------------------------------------------------------------------------------------/
+El jdk 11 no tiene soporte para glasfish, pero el 8 si.
+Existen 2 gormas de instalarlos en centos:
+
+/------------------------------------CORTA--------------------------------------------/
+//---------------openJdk 11
+yum install java-11-openjdk
+java --version
+//---------------openJdk 8
+su -c "yum install java-1.8.0-openjdk"
+java -version
+/--------------------------------FIN CORTA--------------------------------------------/
+/-------------------------------CAMBIAR VERSION EJECUTABLE DEL OPENJDK----------------/
+[root@new-host jvm]# update-alternatives --config java
+
+Hay 3 programas que proporcionan 'java'.
+
+  Selección    Comando
+-----------------------------------------------
+   1           java-1.7.0-openjdk.x86_64 (/usr/lib/jvm/java-1.7.0-openjdk-1.7.0.211-2.6.17.1.el7_6.x86_64/jre/bin/java)
+*  2           java-1.8.0-openjdk.x86_64 (/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.201.b09-2.el7_6.x86_64/jre/bin/java)
+ + 3           /usr/lib/jvm/jdk-11.0.2/bin/java
+
+Presione Intro para mantener la selección actual[+], o escriba el número de la selección:  3
+/---------------------------FIN CAMBIAR VERSION EJECUTABLE DEL OPENJDK----------------/
+
+/-------------------------------------------------------------------------------------/
+/-----------------------------FIN INSTALAR JDK----------------------------------------/
+/-------------------------------------------------------------------------------------/
+
+
+
+
+
+
+/-------------------------------------------------------------------------------------/
+/-----------------------------INSTALAR APACHE NETBEANS--------------------------------/
+/-------------------------------------------------------------------------------------/
+https://netbeans.apache.org/
+click en download
+click en los binarios Binaries: incubating-netbeans-11.0-bin.zip ( SHA-512, PGP ASC)
+Nos redireccionada a la web de apache para descargarlo ya sea desde el server de USA o Europa
+https://www-us.apache.org/dist/incubator/netbeans/incubating-netbeans/incubating-11.0/incubating-netbeans-11.0-bin.zip 
+
+
+[root@new-host jvm]# cd /home/rbarraza/Descargas
+[root@new-host Descargas]# ls
+incubating-netbeans-11.0-bin.zip           MS-CEINTL.vscode-language-pack-es-1.33.1.vsix  robo3t-1.3.1-linux-x86_64-7419c406         sidebar
+mongodb-org-server-4.0.8-1.el7.x86_64.rpm  node-crud-master.zip                           robo3t-1.3.1-linux-x86_64-7419c406.tar.gz  sidebar.zip
+[root@new-host Descargas]# mv incubating-netbeans-11.0-bin.zip /opt/
+[root@new-host Descargas]# cd /opt
+[root@new-host opt]# ls
+google  incubating-netbeans-11.0-bin.zip  rh  robo3t  VBoxGuestAdditions-5.2.26
+[root@new-host opt]# unzip incubating-netbeans-11.0-bin.zip
+[root@new-host opt]# ls
+google  incubating-netbeans-11.0-bin.zip  netbeans  rh  robo3t  VBoxGuestAdditions-5.2.26
+[root@new-host opt]# cd netbeans
+[root@new-host netbeans]# ls
+apisupport  CREDITS.html  DISCLAIMER  ergonomics  extide  harness  java    LICENSE   nb            NOTICE  platform  README.html  websvccommon
+bin         DEPENDENCIES  enterprise  etc         groovy  ide      javafx  licenses  netbeans.css  php     profiler  webcommon
+[root@new-host netbeans]# cd etc
+[root@new-host etc]# ls
+netbeans.clusters  netbeans.conf  netbeans.import
+[root@new-host etc]# nano netbeans.conf
+//*****A CONTINUACION HAY QUE MODIFICAR LA LINEA netbeans_jdkhome="/path/to/jdk" AGREGANDOLE LA RUTA DEL JDK EN USO
+//*****EN ESA RUTA SE ENCUENTRAN TODOS LOS BINARIOS, EJEMPLO netbeans_jdkhome="/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.201.b09-2.el7_6.x86_64"
+
+/-------------------------------------------------------------------------------------/
+/-------------------------FIN INSTALAR APACHE NETBEANS--------------------------------/
+/-------------------------------------------------------------------------------------/
+
+
+
+
+
+//--------------------------EJECUTAR NETBEANS-----------------------/
+[root@new-host etc]# cd /opt/netbeans/bin
+[root@new-host bin]# ls
+netbeans  netbeans64.exe  netbeans.exe
+[root@new-host bin]# ./netbeans
+/--------------------------------------------------------------------/
+
+
+
+//----------------------------CREAR ACCESO DIRECTO NETBEANS--------------------/
+[root@new-host share]# cd /usr/share/applications
+[root@new-host applications]# nano netbeans.desktop
+/**************Agregamos lo siguiente******************/
+[Desktop Entry]
+Encoding=UTF-8
+Name= Netbeans
+Comment=Apache Netbeans	IDE
+Exec=/opt/netbeans/bin/netbeans
+Icon=/opt/netbeans/nb/netbeans.png
+Categories=Application;Development;Java;IDE
+Version=1.0
+Type=Application
+Terminal=false
+/******************************************************/
+/---------------------------------------------------------------------------------/
+
+
+
+
+
+
+/-------------------------------------------------------------------------------------/
+/---------------------------INSTALACION MANUAL DEL OPENJDK----------------------------/
+/-------------------------------------------------------------------------------------/
+[root@new-host Descargas]# mv openjdk-11.0.2_linux-x64_bin.tar.gz /usr/lib/jvm
+[root@new-host Descargas]# cd /usr/lib/jvm
+[root@new-host java]# ls
+openjdk-11.0.2_linux-x64_bin.tar.gz
+[root@new-host java]# tar -xvzf openjdk-11.0.2_linux-x64_bin.tar.gz
+[root@new-host jvm]# sh -c 'for bin in /usr/lib/jvm/jdk-11.0.2/bin/*; do update-alternatives --install /usr/bin/$(basename $bin) $(basename $bin) $bin 100; done'
+[root@new-host jvm]# sh -c 'for bin in /usr/lib/jvm/jdk-11.0.2/bin/*; do update-alternatives --set $(basename $bin) $bin; done'
+[root@new-host jvm]# update-alternatives --config java
+
+Hay 3 programas que proporcionan 'java'.
+
+  Selección    Comando
+-----------------------------------------------
+   1           java-1.7.0-openjdk.x86_64 (/usr/lib/jvm/java-1.7.0-openjdk-1.7.0.211-2.6.17.1.el7_6.x86_64/jre/bin/java)
+*  2           java-1.8.0-openjdk.x86_64 (/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.201.b09-2.el7_6.x86_64/jre/bin/java)
+ + 3           /usr/lib/jvm/jdk-11.0.2/bin/java
+
+Presione Intro para mantener la selección actual[+], o escriba el número de la selección:  3
+[root@new-host jvm]# java --version
+openjdk 11.0.2 2019-01-15
+OpenJDK Runtime Environment 18.9 (build 11.0.2+9)
+OpenJDK 64-Bit Server VM 18.9 (build 11.0.2+9, mixed mode)
+[root@new-host jvm]# 
+/-------------------------------------------------------------------------------------/
+/-----------------------FIN DE INSTALACION MANUAL DEL OPENJDK-------------------------/
+/-------------------------------------------------------------------------------------/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+///----------------------ERRORES------------------
+1) ¿Cómo instalar glassfish? Se puede instalar mediante apache-netbeans a la hora de crear un proyecto web
+2) ¿Qué sucede si glassfish no es compatible con el jdk? openjdk 11 hasta el momento noe s compatible con Glasfish, por lotanto hay que utilizar la version 8
+3) ¿Qué sucede si instale la version 8 y netbeans no arranca? Reinicia la máquina
+4) ¿Qué sucede si aun netbeans no arranca? Lo mas probable es que configuraste mal la ruta del jdk netbeans_jdkhome="/path/to/jdk"
+
+
+
+
+
+
+
+
+
+
