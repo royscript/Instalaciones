@@ -29,3 +29,7 @@ Cliente mysql
 [root@computer-2 rbarraza]#sudo yum install libzip
 
 [root@computer-2 rbarraza]#sudo yum -y install mysql-workbench-community
+
+
+//Iniciar consola mysql
+[root@computer-2 rbarraza]#mysql -u root -p
