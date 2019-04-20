@@ -1,0 +1,31 @@
+Instalar Mysql en Centos 7
+[root@computer-2 rbarraza]# yum localinstall https://dev.mysql.com/get/mysql80-community-release-el7-1.noarch.rpm
+[root@computer-2 rbarraza]# yum install mysql-community-server
+[root@computer-2 rbarraza]# systemctl start mysqld.service ## use restart after update
+[root@computer-2 rbarraza]# systemctl enable mysqld.service
+La linea de abajo creara una contraseña momentanea
+[root@computer-2 rbarraza]# grep 'A temporary password is generated for root@localhost' /var/log/mysqld.log |tail -1
+[root@computer-2 rbarraza]# /usr/bin/mysql_secure_installation
+
+
+//Ejecutar mysql de forma automatica
+chkconfig --levels 235 mysqld on
+
+Ejemplo
+usuario root
+contrasena 5J)s)laZw%GV
+
+
+
+
+
+Cliente mysql
+[root@computer-2 rbarraza]#rpm -Uvh http://download.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+
+
+[root@computer-2 rbarraza]#sudo yum install epel-release
+[root@computer-2 rbarraza]#sudo yum install proj
+[root@computer-2 rbarraza]#sudo yum install tinyxml
+[root@computer-2 rbarraza]#sudo yum install libzip
+
+[root@computer-2 rbarraza]#sudo yum -y install mysql-workbench-community
