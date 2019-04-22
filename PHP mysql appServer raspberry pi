@@ -1,0 +1,111 @@
+//Instalar PHP Mysql y appServ en Raspberry pi 3
+Su
+
+sudo nano /etc/apt/sources.list
+
+Agregar
+deb http://repozytorium.mati75.eu/raspbian jessie-backports main contrib non-free
+#deb-src http://repozytorium.mati75.eu/raspbian jessie-backports main contrib non-free
+
+
+gpg --keyserver pgpkeys.mit.edu --recv-key CCD91D6111A06851
+gpg --armor --export CCD91D6111A06851 | apt-key add -
+
+
+apt-get update
+
+
+apt-get install apache2 php7.0 php7.0-curl php7.0-gd php7.0-imap php7.0-json php7.0-mcrypt php7.0-mysql php7.0-opcache php7.0-xmlrpc libapache2-mod-php7.0
+
+
+apt-get install dirmngr
+
+a2enmod php7.0
+
+
+echo "<?php phpinfo();" >> /var/www/html/phpinfo.php
+
+
+
+
+crear usuario mysql admin 164289273
+
+mysql_secure_installation
+	Change the root password? [Y/n] y
+	New password:
+	Re-enter new password:
+	Password updated successfully!
+
+root@raspberrypi:/home/pi# mysql --user=root mysql
+
+
+
+MariaDB [mysql]> flush privileges;
+Query OK, 0 rows affected (0.23 sec)
+
+MariaDB [mysql]> create user admin@localhost identified by '164289273';
+Query OK, 0 rows affected (0.03 sec)
+
+MariaDB [mysql]> GRANT ALL PRIVILEGES ON * . * TO 'admin'@'localhost';
+
+MariaDB [mysql]>
+
+LAS BD SE CREAN MEDIANTE LINEAS DE COMANDO
+
+
+
+//-------------Raspberry modo kiosco
+//Fuente : https://www.raspberrypi.org/forums/viewtopic.php?p=1097444
+
+Te recomiendo que deshagas los cambios del fichero /etc/xdg/lxsession/LXDE/autostart y sigas el procedimiento que te indico.
+
+Supondré que vas a usar la cuenta pi y que has seleccionado con el comando sudo raspi-config el modo de arranque gráfico con autologin en la cuenta pi.
+
+Crea un directorio bin en el home de la cuenta pi:
+Code: Select all
+
+mkdir -p /home/pi/bin
+Seguidamente edita un fichero kiosk.sh en ese directorio bin:
+Code: Select all
+
+nano /home/pi/bin/kiosk.sh
+y añade el siguiente contenido:
+Code: Select all
+
+#!/bin/bash
+export DISPLAY=:0.0
+xset s off
+xset -dpms
+xset s noblank
+chromium-browser --noerrdialogs --disable-session-crashed-bubble --disable-infobars --kiosk http://unizar.es
+Debes dar el permiso de ejecución al fichero anterior con este comando:
+Code: Select all
+
+chmod +x /home/pi/bin/kiosk.sh
+Ahora edita un nuevo fichero /home/pi/.config/autostart/kiosk.desktop:
+Code: Select all
+
+nano /home/pi/.config/autostart/kiosk.desktop
+y añádele este contenido:
+Code: Select all
+
+[Desktop Entry]
+Type=Application
+Name=Kiosk
+Comment=
+Exec=/home/pi/bin/kiosk.sh
+Terminal=false
+Hidden=false
+Si reinicias la RPi, debería arrancar en modo kiosko con la página web de la Universidad de Zaragoza.
+
+Espero que te funcione.
+
+Si el directorio /home/pi/.config/autostart/ no existe, créalo con el comando que te indico antes de editar el fichero kiosk.desktop:
+Code: Select all
+
+mkdir -p /home/pi/.config/autostart/
+nano /home/pi/.config/autostart/kiosk.desktop
+Además, si no está instalado el navegador chromium, lo deberás instalar con este comando:
+Code: Select all
+
+sudo apt-get install chromium-browser
